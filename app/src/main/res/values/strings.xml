@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Blog App</string>
+    <string name="error_something_went_wrong">Something went wrong</string>
+    <string name="error_no_internet_connection">No internet connection</string>
 </resources>
