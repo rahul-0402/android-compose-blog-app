@@ -10,10 +10,10 @@ interface ConduitApi {
     @POST("users/login")
     suspend fun login(
         @Body userRequest: UserRequest
-    ):Response<UserResponse>
+    ): Response<UserResponse>
 
     @POST("users")
     suspend fun register(
         @Body userRequest: UserRequest
-    ):Response<UserResponse>
+    ): Response<UserResponse>
 }
