@@ -7,7 +7,7 @@ import retrofit2.http.Body
 import retrofit2.http.POST
 
 interface ConduitApi {
-    @POST("api/users/login")
+    @POST("users/login")
     suspend fun login(
         @Body userRequest: UserRequest
     ):Response<UserResponse>

@@ -1,13 +1,10 @@
 package com.rahulghag.blogapp.ui.auth.login
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rahulghag.blogapp.domain.usecases.LoginUseCase
+import com.rahulghag.blogapp.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,15 +21,46 @@ class LoginViewModel @Inject constructor(
 
     fun onEvent(event: LoginUiEvent) {
         when (event) {
+            is LoginUiEvent.EmailChanged -> {
+                _uiState.update { it.copy(email = event.email) }
+            }
+
+            is LoginUiEvent.PasswordChanged -> {
+                _uiState.update { it.copy(password = event.password) }
+            }
+
             LoginUiEvent.Login -> {
                 login()
             }
         }
     }
 
-    private fun login()  = viewModelScope.launch{
+    private fun login() = viewModelScope.launch {
         _uiState.update { it.copy(isLoading = true) }
-        delay(3000)
-        _uiState.update { it.copy(isLoading = false) }
+        when (val result = loginUseCase.invoke(
+            email = uiState.value.email,
+            password = uiState.value.password
+        )) {
+            is Resource.Success -> {
+                _uiState.update {
+                    it.copy(
+                        isLoading = false
+                    )
+                }
+            }
+
+            is Resource.Error -> {
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        message = result.message
+                    )
+                }
+            }
+        }
+    }
+
+    fun messageShown() {
+        _uiState.update { it.copy(message = null) }
     }
 }
