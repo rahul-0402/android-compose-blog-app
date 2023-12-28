@@ -20,7 +20,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
 import com.rahulghag.blogapp.ui.auth.login.LoginScreen
 import com.rahulghag.blogapp.ui.auth.login.LoginViewModel
-import com.rahulghag.blogapp.ui.auth.registration.RegistrationScreen
+import com.rahulghag.blogapp.ui.auth.register.RegisterScreen
+import com.rahulghag.blogapp.ui.auth.register.RegisterViewModel
 import com.rahulghag.blogapp.ui.components.TopBar
 
 @Composable
@@ -76,21 +77,18 @@ fun NavGraphBuilder.authGraph(
                 viewModel = viewModel,
                 snackbarHostState = snackbarHostState,
                 onRegisterButtonClicked = {
-                    navController.navigate(Screen.Registration.name)
+                    navController.navigate(Screen.Register.name)
                 },
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(16.dp)
             )
         }
-        composable(route = Screen.Registration.name) {
-            RegistrationScreen(
-                onLoginButtonClicked = {
-                    navController.popBackStack(
-                        Screen.Login.name,
-                        inclusive = false
-                    )
-                },
+        composable(route = Screen.Register.name) {
+            val viewModel = hiltViewModel<RegisterViewModel>()
+            RegisterScreen(
+                viewModel = viewModel,
+                snackbarHostState = snackbarHostState,
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(16.dp)

@@ -5,5 +5,5 @@ import com.rahulghag.blogapp.R
 
 enum class Screen(@StringRes val title: Int) {
     Login(title = R.string.login),
-    Registration(title = R.string.registration),
+    Register(title = R.string.register),
 }

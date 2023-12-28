@@ -44,6 +44,38 @@ class AuthRepositoryImpl(
         }
     }
 
+    override suspend fun register(
+        username: String,
+        email: String,
+        password: String
+    ): Resource<User> {
+        val userRequest =
+            UserRequest(UserRequestDto(username = username, email = email, password = password))
+        return try {
+            val response =
+                conduitApi.register(
+                    userRequest = userRequest
+                )
+            if (response.isSuccessful) {
+                val responseBody = response.body()
+                if (responseBody?.userDto != null) {
+                    val user = userDomainMapper.mapToDomainModel(responseBody.userDto)
+                    Resource.Success(data = user)
+                } else {
+                    Resource.Error(message = UiMessage.StringResource(R.string.error_something_went_wrong))
+                }
+            } else {
+                Resource.Error(message = parseErrorResponse(errorBody = response.errorBody()))
+            }
+        } catch (exception: Exception) {
+            return when (exception) {
+                is IOException -> Resource.Error(message = UiMessage.StringResource(R.string.error_no_internet_connection))
+                is HttpException -> Resource.Error(message = UiMessage.StringResource(R.string.error_something_went_wrong))
+                else -> Resource.Error(message = UiMessage.StringResource(R.string.error_something_went_wrong))
+            }
+        }
+    }
+
 //    override suspend fun login(email: String, password: String): Resource<User> {
 //        val userRequest = UserRequest(UserRequestDto(email = email, password = password))
 //        return baseApiCall(
