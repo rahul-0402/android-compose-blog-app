@@ -10,22 +10,18 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navigation
-import com.rahulghag.blogapp.ui.auth.create_account.CreateAccountScreen
-import com.rahulghag.blogapp.ui.auth.create_account.CreateAccountViewModel
-import com.rahulghag.blogapp.ui.auth.login.LoginScreen
-import com.rahulghag.blogapp.ui.auth.login.LoginViewModel
+import com.rahulghag.blogapp.MainViewModel
 import com.rahulghag.blogapp.ui.components.TopBar
+import com.rahulghag.blogapp.ui.splash.SplashScreen
 
 @Composable
 fun SetupNavigation(
+    mainViewModel: MainViewModel,
     navController: NavHostController = rememberNavController()
 ) {
     // Get current back stack entry
@@ -40,11 +36,13 @@ fun SetupNavigation(
 
     Scaffold(
         topBar = {
-            TopBar(
-                currentScreen = currentScreen,
-                canNavigateBack = navController.previousBackStackEntry != null,
-                navigateUp = { navController.navigateUp() }
-            )
+            currentScreen.title?.let { title ->
+                TopBar(
+                    title = title,
+                    canNavigateBack = navController.previousBackStackEntry != null,
+                    navigateUp = { navController.navigateUp() }
+                )
+            }
         },
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState)
@@ -52,83 +50,28 @@ fun SetupNavigation(
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = determineStartDestination(isUserLoggedIn = false),
+            startDestination = Screen.Splash.name,
             modifier = Modifier.padding(innerPadding)
         ) {
+            composable(route = Screen.Splash.name) {
+                SplashScreen(
+                    mainViewModel = mainViewModel,
+                    navController = navController,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp)
+                )
+            }
+
             authGraph(
                 navController = navController,
                 snackbarHostState = snackbarHostState
             )
+
             homeGraph(
                 navController = navController,
                 snackbarHostState = snackbarHostState
             )
-        }
-    }
-}
-
-private fun determineStartDestination(isUserLoggedIn: Boolean): String {
-    return if (isUserLoggedIn) NavGraph.HOME.name else NavGraph.AUTH.name
-}
-
-fun NavGraphBuilder.authGraph(
-    navController: NavHostController,
-    snackbarHostState: SnackbarHostState
-) {
-    navigation(
-        startDestination = Screen.Login.name,
-        route = NavGraph.AUTH.name
-    ) {
-        composable(route = Screen.Login.name) {
-            val viewModel = hiltViewModel<LoginViewModel>()
-            LoginScreen(
-                viewModel = viewModel,
-                snackbarHostState = snackbarHostState,
-                onNavigateToCreateAccount = {
-                    navController.navigate(Screen.CreateAccount.name)
-                },
-                onNavigateToHome = {
-                    navigateToHome(navController)
-                },
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp)
-            )
-        }
-        composable(route = Screen.CreateAccount.name) {
-            val viewModel = hiltViewModel<CreateAccountViewModel>()
-            CreateAccountScreen(
-                viewModel = viewModel,
-                snackbarHostState = snackbarHostState,
-                onNavigateToHome = {
-                    navigateToHome(navController)
-                },
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp)
-            )
-        }
-    }
-}
-
-private fun navigateToHome(navController: NavHostController) {
-    navController.navigate(NavGraph.HOME.name) {
-        popUpTo(NavGraph.AUTH.name) {
-            inclusive = true
-        }
-    }
-}
-
-fun NavGraphBuilder.homeGraph(
-    navController: NavHostController,
-    snackbarHostState: SnackbarHostState
-) {
-    navigation(
-        startDestination = Screen.Articles.name,
-        route = NavGraph.HOME.name
-    ) {
-        composable(route = Screen.Articles.name) {
-
         }
     }
 }
