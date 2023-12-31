@@ -25,8 +25,4 @@ class PreferencesManagerImpl(private val dataStore: DataStore<Preferences>) : Pr
             preferences[PreferenceKeys.KEY_TOKEN] ?: ""
         }
     }
-
-    companion object {
-        private const val PREFERENCES_FILE_NAME = "com.rahulghag.blogapp_preferences"
-    }
 }
