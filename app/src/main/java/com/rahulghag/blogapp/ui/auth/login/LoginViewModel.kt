@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val loginUseCase: LoginUseCase
+    private val loginUseCase: LoginUseCase,
 ) : BaseViewModel<LoginContract.State, LoginContract.Event, LoginContract.Effect>() {
     override fun createInitialState(): LoginContract.State {
         return LoginContract.State()
@@ -50,7 +50,7 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    companion object{
+    companion object {
         private const val TAG = "LoginViewModel"
     }
 }

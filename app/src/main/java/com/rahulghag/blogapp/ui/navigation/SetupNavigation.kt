@@ -18,10 +18,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
-import com.rahulghag.blogapp.ui.auth.login.LoginScreen
-import com.rahulghag.blogapp.ui.auth.login.LoginViewModel
 import com.rahulghag.blogapp.ui.auth.create_account.CreateAccountScreen
 import com.rahulghag.blogapp.ui.auth.create_account.CreateAccountViewModel
+import com.rahulghag.blogapp.ui.auth.login.LoginScreen
+import com.rahulghag.blogapp.ui.auth.login.LoginViewModel
 import com.rahulghag.blogapp.ui.components.TopBar
 
 @Composable
@@ -52,7 +52,7 @@ fun SetupNavigation(
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = NavGraph.AUTH.name,
+            startDestination = determineStartDestination(isUserLoggedIn = false),
             modifier = Modifier.padding(innerPadding)
         ) {
             authGraph(
@@ -65,6 +65,10 @@ fun SetupNavigation(
             )
         }
     }
+}
+
+private fun determineStartDestination(isUserLoggedIn: Boolean): String {
+    return if (isUserLoggedIn) NavGraph.HOME.name else NavGraph.AUTH.name
 }
 
 fun NavGraphBuilder.authGraph(

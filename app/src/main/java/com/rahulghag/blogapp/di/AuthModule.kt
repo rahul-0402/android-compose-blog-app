@@ -1,11 +1,13 @@
 package com.rahulghag.blogapp.di
 
+import com.rahulghag.blogapp.data.local.PreferencesManager
 import com.rahulghag.blogapp.data.remote.ConduitApi
 import com.rahulghag.blogapp.data.remote.mappers.UserDomainMapper
 import com.rahulghag.blogapp.data.repositories.AuthRepositoryImpl
 import com.rahulghag.blogapp.domain.repositories.AuthRepository
-import com.rahulghag.blogapp.domain.usecases.LoginUseCase
+import com.rahulghag.blogapp.domain.usecases.CheckUserLoginStatusUseCase
 import com.rahulghag.blogapp.domain.usecases.CreateAccountUseCase
+import com.rahulghag.blogapp.domain.usecases.LoginUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,10 +27,12 @@ object AuthModule {
     @Singleton
     fun provideAuthRepository(
         conduitApi: ConduitApi,
-        userDomainMapper: UserDomainMapper
+        userDomainMapper: UserDomainMapper,
+        preferencesManager: PreferencesManager
     ): AuthRepository {
         return AuthRepositoryImpl(
             conduitApi = conduitApi,
+            preferencesManager = preferencesManager,
             userDomainMapper = userDomainMapper
         )
     }
@@ -43,5 +47,11 @@ object AuthModule {
     @Singleton
     fun provideCreateAccountUseCase(authRepository: AuthRepository): CreateAccountUseCase {
         return CreateAccountUseCase(authRepository = authRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCheckUserLoginStatusUseCase(preferencesManager: PreferencesManager): CheckUserLoginStatusUseCase {
+        return CheckUserLoginStatusUseCase(preferencesManager = preferencesManager)
     }
 }

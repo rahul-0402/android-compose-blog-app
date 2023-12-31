@@ -1,6 +1,7 @@
 package com.rahulghag.blogapp.data.repositories
 
 import com.rahulghag.blogapp.R
+import com.rahulghag.blogapp.data.local.PreferencesManager
 import com.rahulghag.blogapp.data.remote.ConduitApi
 import com.rahulghag.blogapp.data.remote.dtos.request.UserRequest
 import com.rahulghag.blogapp.data.remote.dtos.request.UserRequestDto
@@ -15,6 +16,7 @@ import java.io.IOException
 
 class AuthRepositoryImpl(
     private val conduitApi: ConduitApi,
+    private val preferencesManager: PreferencesManager,
     private val userDomainMapper: UserDomainMapper
 ) : AuthRepository {
     override suspend fun login(email: String, password: String): Resource<User> {
@@ -28,6 +30,7 @@ class AuthRepositoryImpl(
                 val responseBody = response.body()
                 if (responseBody?.userDto != null) {
                     val user = userDomainMapper.mapToDomainModel(responseBody.userDto)
+                    saveToken(user)
                     Resource.Success(data = user)
                 } else {
                     Resource.Error(message = UiMessage.StringResource(R.string.error_something_went_wrong))
@@ -60,6 +63,7 @@ class AuthRepositoryImpl(
                 val responseBody = response.body()
                 if (responseBody?.userDto != null) {
                     val user = userDomainMapper.mapToDomainModel(responseBody.userDto)
+                    saveToken(user)
                     Resource.Success(data = user)
                 } else {
                     Resource.Error(message = UiMessage.StringResource(R.string.error_something_went_wrong))
@@ -74,6 +78,10 @@ class AuthRepositoryImpl(
                 else -> Resource.Error(message = UiMessage.StringResource(R.string.error_something_went_wrong))
             }
         }
+    }
+
+    private suspend fun saveToken(user: User) {
+        user.token?.let { token -> preferencesManager.saveToken(token = token) }
     }
 
 //    override suspend fun login(email: String, password: String): Resource<User> {

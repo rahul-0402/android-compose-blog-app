@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CreateAccountViewModel @Inject constructor(
-    private val createAccountUseCase: CreateAccountUseCase
+    private val createAccountUseCase: CreateAccountUseCase,
 ) : BaseViewModel<CreateAccountContract.State, CreateAccountContract.Event, CreateAccountContract.Effect>() {
     override fun createInitialState() = CreateAccountContract.State()
 
