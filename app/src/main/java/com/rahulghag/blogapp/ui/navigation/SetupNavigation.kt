@@ -20,8 +20,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
 import com.rahulghag.blogapp.ui.auth.login.LoginScreen
 import com.rahulghag.blogapp.ui.auth.login.LoginViewModel
-import com.rahulghag.blogapp.ui.auth.register.RegisterScreen
-import com.rahulghag.blogapp.ui.auth.register.RegisterViewModel
+import com.rahulghag.blogapp.ui.auth.create_account.CreateAccountScreen
+import com.rahulghag.blogapp.ui.auth.create_account.CreateAccountViewModel
 import com.rahulghag.blogapp.ui.components.TopBar
 
 @Composable
@@ -59,6 +59,10 @@ fun SetupNavigation(
                 navController = navController,
                 snackbarHostState = snackbarHostState
             )
+            homeGraph(
+                navController = navController,
+                snackbarHostState = snackbarHostState
+            )
         }
     }
 }
@@ -76,23 +80,51 @@ fun NavGraphBuilder.authGraph(
             LoginScreen(
                 viewModel = viewModel,
                 snackbarHostState = snackbarHostState,
-                onRegisterButtonClicked = {
-                    navController.navigate(Screen.Register.name)
+                onNavigateToCreateAccount = {
+                    navController.navigate(Screen.CreateAccount.name)
+                },
+                onNavigateToHome = {
+                    navigateToHome(navController)
                 },
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(16.dp)
             )
         }
-        composable(route = Screen.Register.name) {
-            val viewModel = hiltViewModel<RegisterViewModel>()
-            RegisterScreen(
+        composable(route = Screen.CreateAccount.name) {
+            val viewModel = hiltViewModel<CreateAccountViewModel>()
+            CreateAccountScreen(
                 viewModel = viewModel,
                 snackbarHostState = snackbarHostState,
+                onNavigateToHome = {
+                    navigateToHome(navController)
+                },
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(16.dp)
             )
+        }
+    }
+}
+
+private fun navigateToHome(navController: NavHostController) {
+    navController.navigate(NavGraph.HOME.name) {
+        popUpTo(NavGraph.AUTH.name) {
+            inclusive = true
+        }
+    }
+}
+
+fun NavGraphBuilder.homeGraph(
+    navController: NavHostController,
+    snackbarHostState: SnackbarHostState
+) {
+    navigation(
+        startDestination = Screen.Articles.name,
+        route = NavGraph.HOME.name
+    ) {
+        composable(route = Screen.Articles.name) {
+
         }
     }
 }

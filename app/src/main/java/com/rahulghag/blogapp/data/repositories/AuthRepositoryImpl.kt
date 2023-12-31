@@ -44,7 +44,7 @@ class AuthRepositoryImpl(
         }
     }
 
-    override suspend fun register(
+    override suspend fun createAccount(
         username: String,
         email: String,
         password: String
@@ -53,7 +53,7 @@ class AuthRepositoryImpl(
             UserRequest(UserRequestDto(username = username, email = email, password = password))
         return try {
             val response =
-                conduitApi.register(
+                conduitApi.createAccount(
                     userRequest = userRequest
                 )
             if (response.isSuccessful) {

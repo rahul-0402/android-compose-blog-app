@@ -3,17 +3,17 @@
     <string name="error_something_went_wrong">Something went wrong</string>
     <string name="error_no_internet_connection">No internet connection</string>
     <string name="login">Login</string>
-    <string name="register">Register</string>
+    <string name="create_account">Create account</string>
     <string name="auth">auth</string>
     <string name="back_button">Back</string>
     <string name="submit">Submit</string>
     <string name="enter_email">Enter email</string>
     <string name="enter_password">Enter password</string>
-    <string name="already_have_an_account_register">Already have an account? Register</string>
     <string name="email_cannot_be_blank">Email cannot be blank</string>
     <string name="invalid_email_format">Invalid email format</string>
     <string name="password_cannot_be_blank">Password cannot be blank</string>
     <string name="password_too_short">Password too short</string>
     <string name="enter_username">Enter username</string>
     <string name="username_cannot_be_blank">Username cannot be empty</string>
+    <string name="articles">Articles</string>
 </resources>

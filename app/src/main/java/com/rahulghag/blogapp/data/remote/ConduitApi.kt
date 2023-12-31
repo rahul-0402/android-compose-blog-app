@@ -13,7 +13,7 @@ interface ConduitApi {
     ): Response<UserResponse>
 
     @POST("users")
-    suspend fun register(
+    suspend fun createAccount(
         @Body userRequest: UserRequest
     ): Response<UserResponse>
 }

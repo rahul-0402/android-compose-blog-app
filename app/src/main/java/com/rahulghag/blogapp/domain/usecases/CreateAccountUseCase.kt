@@ -7,7 +7,7 @@ import com.rahulghag.blogapp.utils.Resource
 import com.rahulghag.blogapp.utils.UiMessage
 import com.rahulghag.blogapp.utils.isValidEmail
 
-class RegisterUseCase(
+class CreateAccountUseCase(
     private val authRepository: AuthRepository,
 ) {
     suspend operator fun invoke(username: String, email: String, password: String): Resource<User> {
@@ -31,7 +31,7 @@ class RegisterUseCase(
             return Resource.Error(message = UiMessage.StringResource(R.string.password_too_short))
         }
 
-        return authRepository.register(username = username, email = email, password = password)
+        return authRepository.createAccount(username = username, email = email, password = password)
     }
 
     companion object {

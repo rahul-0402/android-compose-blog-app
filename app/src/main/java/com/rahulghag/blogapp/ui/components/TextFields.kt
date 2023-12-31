@@ -1,6 +1,5 @@
 package com.rahulghag.blogapp.ui.components
 
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.Composable
@@ -20,7 +19,7 @@ fun TextField(
     OutlinedTextField(
         value = value,
         onValueChange = { onValueChange(it) },
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier,
         label = label,
         visualTransformation = visualTransformation,
         keyboardOptions = keyboardOptions,

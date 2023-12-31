@@ -5,7 +5,7 @@ import com.rahulghag.blogapp.data.remote.mappers.UserDomainMapper
 import com.rahulghag.blogapp.data.repositories.AuthRepositoryImpl
 import com.rahulghag.blogapp.domain.repositories.AuthRepository
 import com.rahulghag.blogapp.domain.usecases.LoginUseCase
-import com.rahulghag.blogapp.domain.usecases.RegisterUseCase
+import com.rahulghag.blogapp.domain.usecases.CreateAccountUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -41,7 +41,7 @@ object AuthModule {
 
     @Provides
     @Singleton
-    fun provideRegisterUseCase(authRepository: AuthRepository): RegisterUseCase {
-        return RegisterUseCase(authRepository = authRepository)
+    fun provideCreateAccountUseCase(authRepository: AuthRepository): CreateAccountUseCase {
+        return CreateAccountUseCase(authRepository = authRepository)
     }
 }
