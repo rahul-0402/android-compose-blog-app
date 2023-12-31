@@ -20,9 +20,9 @@ class PreferencesManagerImpl(private val dataStore: DataStore<Preferences>) : Pr
         }
     }
 
-    override fun getToken(): Flow<String> {
+    override fun getToken(): Flow<String?> {
         return dataStore.data.catch { emit(emptyPreferences()) }.map { preferences ->
-            preferences[PreferenceKeys.KEY_TOKEN] ?: ""
+            preferences[PreferenceKeys.KEY_TOKEN]
         }
     }
 }

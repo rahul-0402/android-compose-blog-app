@@ -5,5 +5,5 @@ import kotlinx.coroutines.flow.Flow
 interface PreferencesManager {
     suspend fun saveToken(token: String)
 
-    fun getToken(): Flow<String>
+    fun getToken(): Flow<String?>
 }

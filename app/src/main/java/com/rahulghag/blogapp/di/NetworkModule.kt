@@ -1,7 +1,9 @@
 package com.rahulghag.blogapp.di
 
 import com.rahulghag.blogapp.BuildConfig
+import com.rahulghag.blogapp.data.local.PreferencesManager
 import com.rahulghag.blogapp.data.remote.ConduitApi
+import com.rahulghag.blogapp.data.remote.interceptors.AuthHeaderInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -24,10 +26,17 @@ object NetworkModule {
 
     @Provides
     @Singleton
+    fun provideAuthHeaderInterceptor(preferencesManager: PreferencesManager) =
+        AuthHeaderInterceptor(preferencesManager = preferencesManager)
+
+    @Provides
+    @Singleton
     fun provideOkHttpClient(
-        httpLoggingInterceptor: HttpLoggingInterceptor
+        httpLoggingInterceptor: HttpLoggingInterceptor,
+        authHeaderInterceptor: AuthHeaderInterceptor
     ): OkHttpClient {
         val okHttpClient = OkHttpClient.Builder()
+            .addInterceptor(authHeaderInterceptor)
         if (BuildConfig.DEBUG) {
             okHttpClient.addInterceptor(httpLoggingInterceptor)
         }
