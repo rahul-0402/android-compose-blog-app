@@ -17,8 +17,4 @@ class AuthHeaderInterceptor(val preferencesManager: PreferencesManager) : Interc
         }
         return chain.proceed(request.build())
     }
-
-    companion object {
-        private const val TAG = "AuthHeaderInterceptor"
-    }
 }
