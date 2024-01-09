@@ -3,6 +3,13 @@ package com.rahulghag.blogapp.data.remote.dtos.response
 
 import com.google.gson.annotations.SerializedName
 
+data class ArticlesResponse(
+    @SerializedName("articles")
+    val articles: List<ArticleDto>?,
+    @SerializedName("articlesCount")
+    val articlesCount: Int?
+)
+
 data class ArticleDto(
     @SerializedName("author")
     val authorDto: AuthorDto?,
@@ -13,7 +20,7 @@ data class ArticleDto(
     @SerializedName("description")
     val description: String?,
     @SerializedName("favorited")
-    val favorited: Boolean?,
+    val isFavorite: Boolean?,
     @SerializedName("favoritesCount")
     val favoritesCount: Int?,
     @SerializedName("slug")

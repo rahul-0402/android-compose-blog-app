@@ -16,4 +16,6 @@
     <string name="enter_username">Enter username</string>
     <string name="username_cannot_be_blank">Username cannot be empty</string>
     <string name="articles">Articles</string>
+    <string name="published_on">Published on %1$s</string>
+    <string name="by">By %1$s</string>
 </resources>
