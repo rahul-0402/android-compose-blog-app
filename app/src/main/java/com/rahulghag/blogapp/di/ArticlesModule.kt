@@ -5,6 +5,7 @@ import com.rahulghag.blogapp.data.remote.mappers.ArticleDomainMapper
 import com.rahulghag.blogapp.data.remote.mappers.AuthorDomainMapper
 import com.rahulghag.blogapp.data.repositories.articles.ArticlesRepositoryImpl
 import com.rahulghag.blogapp.domain.repositories.ArticlesRepository
+import com.rahulghag.blogapp.domain.usecases.GetArticlesUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -36,5 +37,11 @@ object ArticlesModule {
             conduitApi = conduitApi,
             articleDomainMapper = articleDomainMapper
         )
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetArticlesUseCase(articlesRepository: ArticlesRepository): GetArticlesUseCase {
+        return GetArticlesUseCase(articlesRepository = articlesRepository)
     }
 }

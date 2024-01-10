@@ -2,7 +2,7 @@ package com.rahulghag.blogapp.ui.articles
 
 import androidx.lifecycle.viewModelScope
 import com.rahulghag.blogapp.data.repositories.articles.ArticlesPaginator
-import com.rahulghag.blogapp.domain.repositories.ArticlesRepository
+import com.rahulghag.blogapp.domain.usecases.GetArticlesUseCase
 import com.rahulghag.blogapp.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ArticlesViewModel @Inject constructor(
-    private val articlesRepository: ArticlesRepository
+    private val getArticlesUseCase: GetArticlesUseCase
 ) : BaseViewModel<ArticlesContract.State, ArticlesContract.Event, ArticlesContract.Effect>() {
 
     private val articlesPaginator = ArticlesPaginator(
@@ -18,8 +18,8 @@ class ArticlesViewModel @Inject constructor(
         onLoadComplete = {
             setState { copy(isLoading = it) }
         },
-        onRequest = { nextPage ->
-            articlesRepository.getArticles(nextPage)
+        onRequest = { nextKey ->
+            getArticlesUseCase.invoke(offset = nextKey)
         },
         getNextKey = {
             currentState.page + it.size
