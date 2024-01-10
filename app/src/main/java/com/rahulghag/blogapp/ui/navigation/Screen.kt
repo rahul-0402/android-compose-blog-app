@@ -7,5 +7,6 @@ enum class Screen(@StringRes val title: Int? = null) {
     Splash,
     Login(title = R.string.login),
     CreateAccount(title = R.string.create_account),
-    Articles(title = R.string.articles)
+    Articles(title = R.string.articles),
+    ArticleDetails
 }

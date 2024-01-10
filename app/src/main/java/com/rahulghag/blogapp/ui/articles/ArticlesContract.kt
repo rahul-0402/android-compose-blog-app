@@ -9,14 +9,18 @@ import com.rahulghag.blogapp.utils.UiMessage
 class ArticlesContract {
     data class State(
         val items: List<Article> = emptyList(),
-        val page: Int = 0,
+        val offset: Int = 0,
         val lastPageReached: Boolean = false,
         val isLoading: Boolean = false,
+        val selectedArticle: Article? = null
     ) : UiState
 
-    sealed class Event : UiEvent
+    sealed class Event : UiEvent {
+        data class SelectArticle(val article: Article) : Event()
+    }
 
     sealed class Effect : UiEffect {
-        data class ShowMessage(val uiMessage: UiMessage?) : ArticlesContract.Effect()
+        data object NavigateToArticleDetails : Effect()
+        data class ShowMessage(val uiMessage: UiMessage?) : Effect()
     }
 }

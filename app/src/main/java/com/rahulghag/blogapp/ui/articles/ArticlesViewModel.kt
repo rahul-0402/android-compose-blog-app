@@ -14,7 +14,7 @@ class ArticlesViewModel @Inject constructor(
 ) : BaseViewModel<ArticlesContract.State, ArticlesContract.Event, ArticlesContract.Effect>() {
 
     private val articlesPaginator = ArticlesPaginator(
-        initialKey = currentState.page,
+        initialKey = currentState.offset,
         onLoadComplete = {
             setState { copy(isLoading = it) }
         },
@@ -22,7 +22,7 @@ class ArticlesViewModel @Inject constructor(
             getArticlesUseCase.invoke(offset = nextKey)
         },
         getNextKey = {
-            currentState.page + it.size
+            currentState.offset + it.size
         },
         onError = {
             setEffect { ArticlesContract.Effect.ShowMessage(uiMessage = it) }
@@ -31,17 +31,20 @@ class ArticlesViewModel @Inject constructor(
             setState {
                 copy(
                     items = currentState.items + items,
-                    page = newKey,
+                    offset = newKey,
                     lastPageReached = items.isEmpty()
                 )
             }
         }
     )
-
     override fun createInitialState() = ArticlesContract.State()
-
     override fun handleEvent(event: ArticlesContract.Event) {
-        TODO("Not yet implemented")
+        when (event) {
+            is ArticlesContract.Event.SelectArticle -> {
+                setState { copy(selectedArticle = event.article) }
+                setEffect { ArticlesContract.Effect.NavigateToArticleDetails }
+            }
+        }
     }
 
     init {

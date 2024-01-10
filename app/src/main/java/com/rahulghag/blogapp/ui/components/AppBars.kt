@@ -15,13 +15,17 @@ import com.rahulghag.blogapp.R
 
 @Composable
 fun TopBar(
-    title: Int,
+    title: Int?,
     canNavigateBack: Boolean,
     navigateUp: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     TopAppBar(
-        title = { Text(stringResource(title)) },
+        title = {
+            title?.let {
+                Text(stringResource(title))
+            }
+        },
         colors = TopAppBarDefaults.mediumTopAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer
         ),

@@ -1,5 +1,6 @@
 package com.rahulghag.blogapp.ui.articles
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,6 +38,7 @@ import kotlinx.coroutines.launch
 fun ArticlesScreen(
     viewModel: ArticlesViewModel,
     snackbarHostState: SnackbarHostState,
+    onNavigateToArticleDetails: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -55,6 +57,10 @@ fun ArticlesScreen(
                         }
                     }
                 }
+
+                ArticlesContract.Effect.NavigateToArticleDetails -> {
+                    onNavigateToArticleDetails()
+                }
             }
         }
     }
@@ -72,6 +78,9 @@ fun ArticlesScreen(
                 isLoading = uiState.isLoading,
                 onLoadNextItems = {
                     viewModel.getArticles()
+                },
+                onSelectArticle = { article ->
+                    viewModel.setEvent(ArticlesContract.Event.SelectArticle(article = article))
                 }
             )
         }
@@ -83,7 +92,8 @@ private fun Articles(
     articles: List<Article>,
     lastPageReached: Boolean,
     isLoading: Boolean,
-    onLoadNextItems: () -> Unit
+    onLoadNextItems: () -> Unit,
+    onSelectArticle: (Article) -> Unit
 ) {
     val scrollState = rememberLazyListState()
 
@@ -100,7 +110,12 @@ private fun Articles(
                     onLoadNextItems()
                 }
             }
-            ArticleItem(article)
+            ArticleItem(
+                article = article,
+                onSelectArticle = {
+                    onSelectArticle(it)
+                }
+            )
             Divider()
         }
         item {
@@ -119,10 +134,16 @@ private fun Articles(
 }
 
 @Composable
-private fun ArticleItem(article: Article) {
+private fun ArticleItem(
+    article: Article,
+    onSelectArticle: (Article) -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
+            .clickable {
+                onSelectArticle(article)
+            }
             .padding(start = 16.dp, top = 12.dp, end = 16.dp, bottom = 16.dp)
     ) {
         article.title?.let {

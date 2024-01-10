@@ -36,13 +36,11 @@ fun SetupNavigation(
 
     Scaffold(
         topBar = {
-            currentScreen.title?.let { title ->
-                TopBar(
-                    title = title,
-                    canNavigateBack = navController.previousBackStackEntry != null,
-                    navigateUp = { navController.navigateUp() }
-                )
-            }
+            TopBar(
+                title = currentScreen.title,
+                canNavigateBack = navController.previousBackStackEntry != null,
+                navigateUp = { navController.navigateUp() }
+            )
         },
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState)
