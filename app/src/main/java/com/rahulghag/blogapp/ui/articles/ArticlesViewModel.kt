@@ -7,6 +7,7 @@ import com.rahulghag.blogapp.domain.usecases.GetCommentsUseCase
 import com.rahulghag.blogapp.ui.base.BaseViewModel
 import com.rahulghag.blogapp.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
