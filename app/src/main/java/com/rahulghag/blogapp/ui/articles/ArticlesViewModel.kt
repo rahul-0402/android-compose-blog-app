@@ -46,7 +46,7 @@ class ArticlesViewModel @Inject constructor(
     override fun handleEvent(event: ArticlesContract.Event) {
         when (event) {
             is ArticlesContract.Event.SelectArticle -> {
-                setState { copy(selectedArticle = event.article) }
+                setState { copy(selectedArticle = event.article, comments = emptyList()) }
                 setEvent(ArticlesContract.Event.GetComments)
                 setEffect { ArticlesContract.Effect.NavigateToArticleDetails }
             }
