@@ -4,12 +4,12 @@ import com.rahulghag.blogapp.data.remote.dtos.response.ArticleDto
 import com.rahulghag.blogapp.data.utils.DomainMapper
 import com.rahulghag.blogapp.domain.models.Article
 
-class ArticleDomainMapper(private val authorDomainMapper: AuthorDomainMapper) :
+class ArticlesMapper(private val authorMapper: AuthorMapper) :
     DomainMapper<List<ArticleDto>, List<Article>> {
     override fun mapToDomainModel(data: List<ArticleDto>): List<Article> {
         return data.map { articleDto ->
             Article(
-                author = authorDomainMapper.mapToDomainModel(articleDto.authorDto),
+                author = authorMapper.mapToDomainModel(articleDto.authorDto),
                 body = articleDto.body,
                 createdAt = articleDto.createdAt,
                 description = articleDto.description,

@@ -2,7 +2,7 @@ package com.rahulghag.blogapp.di
 
 import com.rahulghag.blogapp.data.local.PreferencesManager
 import com.rahulghag.blogapp.data.remote.ConduitApi
-import com.rahulghag.blogapp.data.remote.mappers.UserDomainMapper
+import com.rahulghag.blogapp.data.remote.mappers.UserMapper
 import com.rahulghag.blogapp.data.repositories.AuthRepositoryImpl
 import com.rahulghag.blogapp.domain.repositories.AuthRepository
 import com.rahulghag.blogapp.domain.usecases.CheckUserLoginStatusUseCase
@@ -19,21 +19,21 @@ import javax.inject.Singleton
 object AuthModule {
     @Provides
     @Singleton
-    fun provideUserDomainMapper(): UserDomainMapper {
-        return UserDomainMapper()
+    fun provideUserMapper(): UserMapper {
+        return UserMapper()
     }
 
     @Provides
     @Singleton
     fun provideAuthRepository(
         conduitApi: ConduitApi,
-        userDomainMapper: UserDomainMapper,
+        userMapper: UserMapper,
         preferencesManager: PreferencesManager
     ): AuthRepository {
         return AuthRepositoryImpl(
             conduitApi = conduitApi,
             preferencesManager = preferencesManager,
-            userDomainMapper = userDomainMapper
+            userMapper = userMapper
         )
     }
 

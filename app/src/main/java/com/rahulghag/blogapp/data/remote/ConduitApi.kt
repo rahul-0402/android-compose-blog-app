@@ -2,11 +2,13 @@ package com.rahulghag.blogapp.data.remote
 
 import com.rahulghag.blogapp.data.remote.dtos.request.UserRequest
 import com.rahulghag.blogapp.data.remote.dtos.response.ArticlesResponse
+import com.rahulghag.blogapp.data.remote.dtos.response.CommentsResponse
 import com.rahulghag.blogapp.data.remote.dtos.response.UserResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ConduitApi {
@@ -24,4 +26,9 @@ interface ConduitApi {
     suspend fun getArticles(
         @Query("offset") offset: Int
     ): Response<ArticlesResponse>
+
+    @GET("/api/articles/{slug}/comments")
+    suspend fun getComments(
+        @Path("slug") slug: String
+    ): Response<CommentsResponse>
 }

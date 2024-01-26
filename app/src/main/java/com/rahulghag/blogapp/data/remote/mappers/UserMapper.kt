@@ -4,7 +4,7 @@ import com.rahulghag.blogapp.data.remote.dtos.response.UserDto
 import com.rahulghag.blogapp.data.utils.DomainMapper
 import com.rahulghag.blogapp.domain.models.User
 
-class UserDomainMapper : DomainMapper<UserDto, User> {
+class UserMapper : DomainMapper<UserDto, User> {
     override fun mapToDomainModel(data: UserDto): User {
         return User(
             bio = data.bio,

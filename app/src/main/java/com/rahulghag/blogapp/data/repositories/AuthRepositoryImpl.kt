@@ -5,7 +5,7 @@ import com.rahulghag.blogapp.data.local.PreferencesManager
 import com.rahulghag.blogapp.data.remote.ConduitApi
 import com.rahulghag.blogapp.data.remote.dtos.request.UserRequest
 import com.rahulghag.blogapp.data.remote.dtos.request.UserRequestDto
-import com.rahulghag.blogapp.data.remote.mappers.UserDomainMapper
+import com.rahulghag.blogapp.data.remote.mappers.UserMapper
 import com.rahulghag.blogapp.data.utils.parseErrorResponse
 import com.rahulghag.blogapp.domain.models.User
 import com.rahulghag.blogapp.domain.repositories.AuthRepository
@@ -17,7 +17,7 @@ import java.io.IOException
 class AuthRepositoryImpl(
     private val conduitApi: ConduitApi,
     private val preferencesManager: PreferencesManager,
-    private val userDomainMapper: UserDomainMapper
+    private val userMapper: UserMapper
 ) : AuthRepository {
     override suspend fun login(email: String, password: String): Resource<User> {
         val userRequest = UserRequest(UserRequestDto(email = email, password = password))
@@ -29,7 +29,7 @@ class AuthRepositoryImpl(
             if (response.isSuccessful) {
                 val responseBody = response.body()
                 if (responseBody?.userDto != null) {
-                    val user = userDomainMapper.mapToDomainModel(responseBody.userDto)
+                    val user = userMapper.mapToDomainModel(responseBody.userDto)
                     saveToken(user)
                     Resource.Success(data = user)
                 } else {
@@ -62,7 +62,7 @@ class AuthRepositoryImpl(
             if (response.isSuccessful) {
                 val responseBody = response.body()
                 if (responseBody?.userDto != null) {
-                    val user = userDomainMapper.mapToDomainModel(responseBody.userDto)
+                    val user = userMapper.mapToDomainModel(responseBody.userDto)
                     saveToken(user)
                     Resource.Success(data = user)
                 } else {
