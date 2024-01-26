@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rahulghag.blogapp.R
 import com.rahulghag.blogapp.domain.models.Article
+import com.rahulghag.blogapp.ui.components.Author
 import com.rahulghag.blogapp.ui.theme.Typography
 import com.rahulghag.blogapp.ui.theme.articleTitle
 import kotlinx.coroutines.flow.collectLatest
@@ -157,11 +158,9 @@ private fun ArticleItem(
             Spacer(modifier = Modifier.height(8.dp))
         }
 
-        article.author?.username?.let {
-            Text(
-                text = stringResource(R.string.by, it),
-                fontSize = 12.sp
-            )
+        article.author?.let { author ->
+            Author(author = author)
+
             Spacer(modifier = Modifier.height(8.dp))
         }
 

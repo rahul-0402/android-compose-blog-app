@@ -2,7 +2,6 @@ package com.rahulghag.blogapp.ui.articles
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -37,8 +36,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rahulghag.blogapp.R
-import com.rahulghag.blogapp.domain.models.Author
 import com.rahulghag.blogapp.domain.models.Comment
+import com.rahulghag.blogapp.ui.components.Author
 import com.rahulghag.blogapp.ui.theme.Typography
 import com.rahulghag.blogapp.ui.theme.articleTitle
 import kotlinx.coroutines.flow.collectLatest
@@ -97,9 +96,9 @@ fun ArticleDetailsScreen(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                article.author?.let {
+                article.author?.let { author ->
                     Author(
-                        author = article.author,
+                        author = author,
                         modifier = modifier
                             .padding(horizontal = 16.dp)
                     )
@@ -114,8 +113,9 @@ fun ArticleDetailsScreen(
                             .padding(horizontal = 16.dp),
                         fontSize = 12.sp,
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
                 }
+
+                Spacer(modifier = Modifier.height(8.dp))
             }
         }
 
@@ -142,25 +142,6 @@ fun ArticleDetailsScreen(
                 onDismissRequest = { showComments = false },
                 sheetState = sheetState,
                 comments = uiState.comments
-            )
-        }
-    }
-}
-
-@Composable
-private fun Author(
-    author: Author,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        author.username?.let {
-            Text(
-                text = it,
-                fontWeight = FontWeight.Bold,
-                fontSize = 12.sp
             )
         }
     }
