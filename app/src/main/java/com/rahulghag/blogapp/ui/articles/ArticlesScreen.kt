@@ -24,13 +24,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rahulghag.blogapp.R
 import com.rahulghag.blogapp.domain.models.Article
+import com.rahulghag.blogapp.ui.theme.Typography
+import com.rahulghag.blogapp.ui.theme.articleTitle
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -149,10 +150,9 @@ private fun ArticleItem(
         article.title?.let {
             Text(
                 text = it,
-                fontWeight = FontWeight.Bold,
-                fontSize = 18.sp,
                 maxLines = 4,
                 overflow = TextOverflow.Ellipsis,
+                style = Typography.articleTitle
             )
             Spacer(modifier = Modifier.height(8.dp))
         }

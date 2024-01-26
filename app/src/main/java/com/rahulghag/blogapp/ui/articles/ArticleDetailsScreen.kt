@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -11,6 +12,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ThumbUp
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
@@ -37,6 +39,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rahulghag.blogapp.R
 import com.rahulghag.blogapp.domain.models.Author
 import com.rahulghag.blogapp.domain.models.Comment
+import com.rahulghag.blogapp.ui.theme.Typography
+import com.rahulghag.blogapp.ui.theme.articleTitle
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -85,19 +89,21 @@ fun ArticleDetailsScreen(
                         text = it,
                         modifier = modifier
                             .padding(start = 16.dp, top = 12.dp, end = 16.dp),
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 18.sp,
                         maxLines = 4,
                         overflow = TextOverflow.Ellipsis,
+                        style = Typography.articleTitle,
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
                 }
 
-                Author(
-                    author = article.author,
-                    modifier = modifier
-                        .padding(horizontal = 16.dp)
-                )
+                Spacer(modifier = Modifier.height(8.dp))
+
+                article.author?.let {
+                    Author(
+                        author = article.author,
+                        modifier = modifier
+                            .padding(horizontal = 16.dp)
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(8.dp))
 
@@ -143,14 +149,14 @@ fun ArticleDetailsScreen(
 
 @Composable
 private fun Author(
-    author: Author?,
+    author: Author,
     modifier: Modifier = Modifier
 ) {
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        author?.username?.let {
+        author.username?.let {
             Text(
                 text = it,
                 fontWeight = FontWeight.Bold,
@@ -168,17 +174,33 @@ fun Comments(onDismissRequest: () -> Unit, sheetState: SheetState, comments: Lis
         },
         sheetState = sheetState
     ) {
-        LazyColumn {
-            items(
-                count = comments.size,
-                key = {
-                    comments[it].id
-                },
-                itemContent = { index ->
-                    val comment = comments[index]
-                    Comment(comment = comment)
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            LazyColumn {
+                item {
+                    Text(
+                        text = stringResource(id = R.string.comments),
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp),
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium
+                    )
                 }
-            )
+
+                items(
+                    count = comments.size,
+                    key = {
+                        comments[it].id
+                    },
+                    itemContent = { index ->
+                        val comment = comments[index]
+                        Comment(comment = comment)
+                        Divider()
+                    }
+                )
+            }
         }
     }
 }
@@ -190,18 +212,20 @@ fun Comment(
 ) {
     Column(
         modifier = modifier
-            .padding(horizontal = 16.dp)
+            .padding(horizontal = 16.dp, vertical = 16.dp)
     ) {
-        Author(author = comment.author)
+        comment.let { comment ->
+            comment.author?.let {
+                Author(author = comment.author)
+            }
 
-        Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
-        Text(
-            text = comment.body,
-            modifier = modifier,
-            fontSize = 12.sp,
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = comment.body,
+                modifier = modifier,
+                fontSize = 12.sp,
+            )
+        }
     }
 }
