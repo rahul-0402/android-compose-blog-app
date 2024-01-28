@@ -7,10 +7,10 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.rahulghag.blogapp.ui.articles.screens.ArticleDetailsScreen
-import com.rahulghag.blogapp.ui.articles.screens.ArticlesScreen
 import com.rahulghag.blogapp.ui.articles.ArticlesViewModel
 import com.rahulghag.blogapp.ui.articles.screens.AddCommentScreen
+import com.rahulghag.blogapp.ui.articles.screens.ArticleDetailsScreen
+import com.rahulghag.blogapp.ui.articles.screens.ArticlesScreen
 import com.rahulghag.blogapp.utils.sharedViewModel
 
 fun NavGraphBuilder.homeGraph(
@@ -47,13 +47,17 @@ fun NavGraphBuilder.homeGraph(
             )
         }
 
-        composable(route = Screen.AddComment.name){
+        composable(route = Screen.AddComment.name) {
             val viewModel = it.sharedViewModel<ArticlesViewModel>(navController)
             AddCommentScreen(
                 viewModel = viewModel,
                 snackbarHostState = snackbarHostState,
                 onNavigateToArticleDetails = {
-
+                    navController.navigate(Screen.ArticleDetails.name) {
+                        popUpTo(Screen.ArticleDetails.name) {
+                            inclusive = true
+                        }
+                    }
                 },
                 modifier = Modifier
                     .fillMaxSize()

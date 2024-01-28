@@ -20,6 +20,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -45,6 +47,8 @@ fun AddCommentScreen(
 
     val coroutineScope = rememberCoroutineScope()
 
+    val focusRequester = remember { FocusRequester() }
+
     LaunchedEffect(key1 = Unit) {
         viewModel.effect.collectLatest { effect ->
             when (effect) {
@@ -56,11 +60,15 @@ fun AddCommentScreen(
                     }
                 }
 
-                else -> {
-
+                ArticlesContract.Effect.NavigateToArticleDetails -> {
+                    onNavigateToArticleDetails()
                 }
             }
         }
+    }
+
+    LaunchedEffect(focusRequester) {
+        focusRequester.requestFocus()
     }
 
     Box(modifier = modifier) {
@@ -68,7 +76,8 @@ fun AddCommentScreen(
             value = uiState.comment,
             onValueChange = { viewModel.setEvent(ArticlesContract.Event.CommentInputChange(it)) },
             modifier = Modifier
-                .fillMaxSize(),
+                .fillMaxSize()
+                .focusRequester(focusRequester),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
             maxLines = 5,
             colors = TextFieldDefaults.colors(

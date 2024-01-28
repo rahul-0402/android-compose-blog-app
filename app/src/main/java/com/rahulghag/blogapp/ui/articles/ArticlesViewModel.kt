@@ -132,11 +132,14 @@ class ArticlesViewModel @Inject constructor(
             )
             when (result) {
                 is Resource.Success -> {
+                    setState { copy(comment = "") }
                     setEvent(ArticlesContract.Event.GetComments)
+                    setEffect { ArticlesContract.Effect.NavigateToArticleDetails }
                     setEffect { ArticlesContract.Effect.ShowMessage(result.message) }
                 }
 
                 is Resource.Error -> {
+                    setState { copy(comment = "") }
                     setEffect { ArticlesContract.Effect.ShowMessage(result.message) }
                 }
             }

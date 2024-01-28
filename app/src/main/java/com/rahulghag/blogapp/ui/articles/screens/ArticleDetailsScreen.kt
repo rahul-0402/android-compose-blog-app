@@ -20,10 +20,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.ThumbUp
-import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.AddCircle
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
@@ -246,13 +244,31 @@ fun Comments(
                 } else {
                     LazyColumn {
                         item {
-                            Text(
-                                text = stringResource(id = R.string.comments),
+                            Row(
                                 modifier = Modifier
-                                    .padding(horizontal = 16.dp),
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Medium
-                            )
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = stringResource(id = R.string.comments),
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Medium
+                                )
+
+                                Icon(
+                                    imageVector = Icons.Rounded.AddCircle,
+                                    contentDescription = stringResource(R.string.add_comment),
+                                    modifier = Modifier
+                                        .height(20.dp)
+                                        .width(20.dp)
+                                        .clickable {
+                                            onDismissRequest()
+                                            onNavigateToAddComment()
+                                        }
+                                )
+                            }
                         }
 
                         items(
