@@ -1,4 +1,4 @@
-package com.rahulghag.blogapp.ui.articles
+package com.rahulghag.blogapp.ui.articles.screens
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -30,6 +30,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rahulghag.blogapp.R
 import com.rahulghag.blogapp.domain.models.Article
+import com.rahulghag.blogapp.ui.articles.ArticlesContract
+import com.rahulghag.blogapp.ui.articles.ArticlesViewModel
 import com.rahulghag.blogapp.ui.components.Author
 import com.rahulghag.blogapp.ui.theme.Typography
 import com.rahulghag.blogapp.ui.theme.articleTitle

@@ -14,13 +14,16 @@ class ArticlesContract {
         val lastPageReached: Boolean = false,
         val isLoading: Boolean = false,
         val selectedArticle: Article? = null,
-        val comments: List<Comment> = emptyList()
+        val comments: List<Comment> = emptyList(),
+        val comment: String = ""
     ) : UiState
 
     sealed class Event : UiEvent {
         data class SelectArticle(val article: Article) : Event()
         data object GetComments : Event()
         data class DeleteComment(val id: Int) : Event()
+        data class CommentInputChange(val comment: String) : Event()
+        data object AddComment : Event()
     }
 
     sealed class Effect : UiEffect {

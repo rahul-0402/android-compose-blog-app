@@ -2,6 +2,7 @@ package com.rahulghag.blogapp.ui.articles
 
 import androidx.lifecycle.viewModelScope
 import com.rahulghag.blogapp.data.repositories.articles.ArticlesPaginator
+import com.rahulghag.blogapp.domain.usecases.AddCommentUseCase
 import com.rahulghag.blogapp.domain.usecases.DeleteCommentUseCase
 import com.rahulghag.blogapp.domain.usecases.GetArticlesUseCase
 import com.rahulghag.blogapp.domain.usecases.GetCommentsUseCase
@@ -15,7 +16,8 @@ import javax.inject.Inject
 class ArticlesViewModel @Inject constructor(
     private val getArticlesUseCase: GetArticlesUseCase,
     private val getCommentsUseCase: GetCommentsUseCase,
-    private val deleteCommentUseCase: DeleteCommentUseCase
+    private val deleteCommentUseCase: DeleteCommentUseCase,
+    private val addCommentUseCase: AddCommentUseCase
 ) : BaseViewModel<ArticlesContract.State, ArticlesContract.Event, ArticlesContract.Effect>() {
 
     private val articlesPaginator = ArticlesPaginator(
@@ -59,6 +61,14 @@ class ArticlesViewModel @Inject constructor(
 
             is ArticlesContract.Event.DeleteComment -> {
                 deleteComment(id = event.id)
+            }
+
+            is ArticlesContract.Event.CommentInputChange -> {
+                setState { copy(comment = event.comment) }
+            }
+
+            ArticlesContract.Event.AddComment -> {
+                addComment()
             }
         }
     }
@@ -104,6 +114,26 @@ class ArticlesViewModel @Inject constructor(
             when (result) {
                 is Resource.Success -> {
                     setState { copy(comments = currentState.comments.filterNot { it.id == id }) }
+                }
+
+                is Resource.Error -> {
+                    setEffect { ArticlesContract.Effect.ShowMessage(result.message) }
+                }
+            }
+        }
+    }
+
+
+    private fun addComment() = viewModelScope.launch {
+        currentState.selectedArticle?.slug?.let { slug ->
+            val result = addCommentUseCase.invoke(
+                slug = slug,
+                comment = currentState.comment
+            )
+            when (result) {
+                is Resource.Success -> {
+                    setEvent(ArticlesContract.Event.GetComments)
+                    setEffect { ArticlesContract.Effect.ShowMessage(result.message) }
                 }
 
                 is Resource.Error -> {

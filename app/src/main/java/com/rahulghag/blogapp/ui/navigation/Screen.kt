@@ -8,5 +8,6 @@ enum class Screen(@StringRes val title: Int? = null) {
     Login(title = R.string.login),
     CreateAccount(title = R.string.create_account),
     Articles(title = R.string.articles),
-    ArticleDetails
+    ArticleDetails,
+    AddComment(title = R.string.add_comment)
 }

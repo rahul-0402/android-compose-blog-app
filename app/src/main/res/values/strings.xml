@@ -22,4 +22,7 @@
     <string name="no_comments_yet">No comments yet</string>
     <string name="be_the_first_to_share_your_thoughts">Be the first to share your thoughts!</string>
     <string name="delete_comment">Delete comment</string>
+    <string name="add_comment">Add Comment</string>
+    <string name="comment_cannot_be_blank">Comment cannot be blank</string>
+    <string name="comment_added_successfully">Comment added successfully</string>
 </resources>

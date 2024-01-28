@@ -1,6 +1,7 @@
-package com.rahulghag.blogapp.ui.articles
+package com.rahulghag.blogapp.ui.articles.screens
 
 import androidx.compose.foundation.LocalIndication
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -14,12 +15,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.ThumbUp
+import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.AddCircle
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
@@ -55,6 +60,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rahulghag.blogapp.R
 import com.rahulghag.blogapp.domain.models.Comment
+import com.rahulghag.blogapp.ui.articles.ArticlesContract
+import com.rahulghag.blogapp.ui.articles.ArticlesViewModel
 import com.rahulghag.blogapp.ui.components.Author
 import com.rahulghag.blogapp.ui.theme.Typography
 import com.rahulghag.blogapp.ui.theme.articleTitle
@@ -65,6 +72,7 @@ import kotlinx.coroutines.launch
 fun ArticleDetailsScreen(
     viewModel: ArticlesViewModel,
     snackbarHostState: SnackbarHostState,
+    onNavigateToAddComment: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -143,7 +151,7 @@ fun ArticleDetailsScreen(
             },
             icon = {
                 Icon(
-                    Icons.Filled.ThumbUp,
+                    imageVector = Icons.Filled.ThumbUp,
                     contentDescription = stringResource(R.string.comments)
                 )
             },
@@ -165,7 +173,8 @@ fun ArticleDetailsScreen(
                 isLoading = uiState.isLoading,
                 onDeleteCommentClick = { id ->
                     viewModel.setEvent(ArticlesContract.Event.DeleteComment(id = id))
-                }
+                },
+                onNavigateToAddComment = { onNavigateToAddComment() }
             )
         }
     }
@@ -177,7 +186,8 @@ fun Comments(
     sheetState: SheetState,
     comments: List<Comment>,
     isLoading: Boolean,
-    onDeleteCommentClick: (Int) -> Unit
+    onDeleteCommentClick: (Int) -> Unit,
+    onNavigateToAddComment: () -> Unit,
 ) {
     ModalBottomSheet(
         onDismissRequest = {
@@ -201,8 +211,7 @@ fun Comments(
             } else {
                 if (comments.isEmpty()) {
                     Column(
-                        modifier = Modifier
-                            .align(Alignment.TopCenter)
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
                             text = stringResource(R.string.no_comments_yet),
@@ -216,9 +225,22 @@ fun Comments(
 
                         Text(
                             text = stringResource(R.string.be_the_first_to_share_your_thoughts),
-                            modifier = Modifier.fillMaxWidth(),
                             fontSize = 12.sp,
                             textAlign = TextAlign.Center
+                        )
+
+                        Spacer(modifier = Modifier.height(24.dp))
+
+                        Icon(
+                            imageVector = Icons.Rounded.AddCircle,
+                            contentDescription = stringResource(R.string.add_comment),
+                            modifier = Modifier
+                                .height(64.dp)
+                                .width(64.dp)
+                                .clickable {
+                                    onDismissRequest()
+                                    onNavigateToAddComment()
+                                }
                         )
                     }
                 } else {

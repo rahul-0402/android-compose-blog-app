@@ -1,5 +1,7 @@
 package com.rahulghag.blogapp.data.remote
 
+import com.rahulghag.blogapp.data.remote.dtos.request.AddCommentRequest
+import com.rahulghag.blogapp.data.remote.dtos.request.CommentDto
 import com.rahulghag.blogapp.data.remote.dtos.request.UserRequest
 import com.rahulghag.blogapp.data.remote.dtos.response.ArticlesResponse
 import com.rahulghag.blogapp.data.remote.dtos.response.CommentsResponse
@@ -37,5 +39,11 @@ interface ConduitApi {
     suspend fun deleteComment(
         @Path("slug") slug: String,
         @Path("id") id: Int
+    ): Response<Any>
+
+    @POST("/api/articles/{slug}/comments")
+    suspend fun addComment(
+        @Path("slug") slug: String,
+        @Body addCommentRequest: AddCommentRequest
     ): Response<Any>
 }
