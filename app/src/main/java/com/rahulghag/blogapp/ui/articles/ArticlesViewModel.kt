@@ -2,19 +2,20 @@ package com.rahulghag.blogapp.ui.articles
 
 import androidx.lifecycle.viewModelScope
 import com.rahulghag.blogapp.data.repositories.articles.ArticlesPaginator
+import com.rahulghag.blogapp.domain.usecases.DeleteCommentUseCase
 import com.rahulghag.blogapp.domain.usecases.GetArticlesUseCase
 import com.rahulghag.blogapp.domain.usecases.GetCommentsUseCase
 import com.rahulghag.blogapp.ui.base.BaseViewModel
 import com.rahulghag.blogapp.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class ArticlesViewModel @Inject constructor(
     private val getArticlesUseCase: GetArticlesUseCase,
-    private val getCommentsUseCase: GetCommentsUseCase
+    private val getCommentsUseCase: GetCommentsUseCase,
+    private val deleteCommentUseCase: DeleteCommentUseCase
 ) : BaseViewModel<ArticlesContract.State, ArticlesContract.Event, ArticlesContract.Effect>() {
 
     private val articlesPaginator = ArticlesPaginator(
@@ -55,6 +56,10 @@ class ArticlesViewModel @Inject constructor(
             is ArticlesContract.Event.GetComments -> {
                 getComments()
             }
+
+            is ArticlesContract.Event.DeleteComment -> {
+                deleteComment(id = event.id)
+            }
         }
     }
 
@@ -69,9 +74,10 @@ class ArticlesViewModel @Inject constructor(
     private fun getComments() = viewModelScope.launch {
         currentState.selectedArticle?.slug?.let { slug ->
             setState { copy(isLoading = true) }
-            when (val result = getCommentsUseCase.invoke(
+            val result = getCommentsUseCase.invoke(
                 slug = slug
-            )) {
+            )
+            when (result) {
                 is Resource.Success -> {
                     setState {
                         copy(
@@ -83,6 +89,25 @@ class ArticlesViewModel @Inject constructor(
 
                 is Resource.Error -> {
                     setState { copy(isLoading = false) }
+                    setEffect { ArticlesContract.Effect.ShowMessage(result.message) }
+                }
+            }
+        }
+    }
+
+    private fun deleteComment(id: Int) = viewModelScope.launch {
+        currentState.selectedArticle?.slug?.let { slug ->
+            val result = deleteCommentUseCase.invoke(
+                slug = slug,
+                id = id
+            )
+            when (result) {
+                is Resource.Success -> {
+                    setState { copy(comments = currentState.comments.filterNot { it.id == id }) }
+                }
+
+                is Resource.Error -> {
+                    setEffect { ArticlesContract.Effect.ShowMessage(result.message) }
                 }
             }
         }

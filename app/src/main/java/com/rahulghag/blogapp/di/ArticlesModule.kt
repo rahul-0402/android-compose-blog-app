@@ -6,6 +6,7 @@ import com.rahulghag.blogapp.data.remote.mappers.AuthorMapper
 import com.rahulghag.blogapp.data.remote.mappers.CommentsMapper
 import com.rahulghag.blogapp.data.repositories.articles.ArticlesRepositoryImpl
 import com.rahulghag.blogapp.domain.repositories.ArticlesRepository
+import com.rahulghag.blogapp.domain.usecases.DeleteCommentUseCase
 import com.rahulghag.blogapp.domain.usecases.GetArticlesUseCase
 import com.rahulghag.blogapp.domain.usecases.GetCommentsUseCase
 import dagger.Module
@@ -59,5 +60,11 @@ object ArticlesModule {
     @Singleton
     fun provideGetCommentsUseCase(articlesRepository: ArticlesRepository): GetCommentsUseCase {
         return GetCommentsUseCase(articlesRepository = articlesRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideDeleteCommentUseCase(articlesRepository: ArticlesRepository): DeleteCommentUseCase {
+        return DeleteCommentUseCase(articlesRepository = articlesRepository)
     }
 }

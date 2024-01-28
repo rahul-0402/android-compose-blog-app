@@ -20,6 +20,7 @@ class ArticlesContract {
     sealed class Event : UiEvent {
         data class SelectArticle(val article: Article) : Event()
         data object GetComments : Event()
+        data class DeleteComment(val id: Int) : Event()
     }
 
     sealed class Effect : UiEffect {

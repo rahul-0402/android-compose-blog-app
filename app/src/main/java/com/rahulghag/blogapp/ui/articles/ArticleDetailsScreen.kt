@@ -1,5 +1,10 @@
 package com.rahulghag.blogapp.ui.articles
 
+import androidx.compose.foundation.LocalIndication
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.indication
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,9 +18,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
@@ -29,14 +37,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -144,10 +157,15 @@ fun ArticleDetailsScreen(
 
         if (showComments) {
             Comments(
-                onDismissRequest = { showComments = false },
+                onDismissRequest = {
+                    showComments = false
+                },
                 sheetState = sheetState,
                 comments = uiState.comments,
-                isLoading = uiState.isLoading
+                isLoading = uiState.isLoading,
+                onDeleteCommentClick = { id ->
+                    viewModel.setEvent(ArticlesContract.Event.DeleteComment(id = id))
+                }
             )
         }
     }
@@ -158,7 +176,8 @@ fun Comments(
     onDismissRequest: () -> Unit,
     sheetState: SheetState,
     comments: List<Comment>,
-    isLoading: Boolean
+    isLoading: Boolean,
+    onDeleteCommentClick: (Int) -> Unit
 ) {
     ModalBottomSheet(
         onDismissRequest = {
@@ -221,7 +240,12 @@ fun Comments(
                             },
                             itemContent = { index ->
                                 val comment = comments[index]
-                                Comment(comment = comment)
+                                Comment(
+                                    comment = comment,
+                                    onDeleteCommentClick = { id ->
+                                        onDeleteCommentClick(id)
+                                    }
+                                )
                                 Divider()
                             }
                         )
@@ -235,23 +259,92 @@ fun Comments(
 @Composable
 fun Comment(
     comment: Comment,
+    onDeleteCommentClick: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
+
+    var isContextMenuVisible by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    var pressOffset by remember {
+        mutableStateOf(DpOffset.Zero)
+    }
+
+    var itemHeight by remember {
+        mutableStateOf(0.dp)
+    }
+
+    val interactionSource = remember {
+        MutableInteractionSource()
+    }
+
+    val density = LocalDensity.current
+
     Column(
         modifier = modifier
+            .onSizeChanged {
+                itemHeight = with(density) { it.height.toDp() }
+            }
+            .indication(interactionSource, LocalIndication.current)
+            .pointerInput(true) {
+                detectTapGestures(
+                    onLongPress = {
+                        isContextMenuVisible = true
+                        pressOffset = DpOffset(it.x.toDp(), it.y.toDp())
+                    },
+                    onPress = {
+                        val press = PressInteraction.Press(it)
+                        interactionSource.emit(press)
+                        tryAwaitRelease()
+                        interactionSource.emit(PressInteraction.Release(press))
+                    }
+                )
+            }
             .padding(horizontal = 16.dp, vertical = 16.dp)
     ) {
         comment.let { comment ->
             comment.author?.let {
-                Author(author = comment.author)
+                Author(
+                    author = comment.author,
+                    modifier = Modifier.fillMaxWidth()
+                )
             }
 
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
                 text = comment.body,
-                modifier = modifier,
+                modifier = Modifier.fillMaxWidth(),
                 fontSize = 12.sp,
+            )
+        }
+        DropdownMenu(
+            expanded = isContextMenuVisible,
+            onDismissRequest = {
+                isContextMenuVisible = false
+            },
+            offset = pressOffset.copy(
+                y = pressOffset.y - itemHeight
+            )
+        ) {
+            DropdownMenuItem(
+                text = {
+                    Text(
+                        text = stringResource(R.string.delete_comment),
+                        fontSize = 12.sp
+                    )
+                },
+                onClick = {
+                    onDeleteCommentClick(comment.id)
+                    isContextMenuVisible = false
+                },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Filled.Delete,
+                        contentDescription = stringResource(R.string.delete_comment)
+                    )
+                }
             )
         }
     }

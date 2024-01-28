@@ -21,4 +21,5 @@
     <string name="comments">Comments</string>
     <string name="no_comments_yet">No comments yet</string>
     <string name="be_the_first_to_share_your_thoughts">Be the first to share your thoughts!</string>
+    <string name="delete_comment">Delete comment</string>
 </resources>

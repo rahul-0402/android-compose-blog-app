@@ -6,6 +6,7 @@ import com.rahulghag.blogapp.data.remote.dtos.response.CommentsResponse
 import com.rahulghag.blogapp.data.remote.dtos.response.UserResponse
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -31,4 +32,10 @@ interface ConduitApi {
     suspend fun getComments(
         @Path("slug") slug: String
     ): Response<CommentsResponse>
+
+    @DELETE("/api/articles/{slug}/comments/{id}")
+    suspend fun deleteComment(
+        @Path("slug") slug: String,
+        @Path("id") id: Int
+    ): Response<Any>
 }
