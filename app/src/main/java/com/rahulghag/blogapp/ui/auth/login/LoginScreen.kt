@@ -76,14 +76,14 @@ fun LoginScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             TextField(
-                value = viewModel.currentState.email,
+                value = uiState.email,
                 onValueChange = { viewModel.setEvent(LoginContract.Event.EmailInputChange(it)) },
                 label = { Text(stringResource(R.string.enter_email)) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
             )
 
             TextField(
-                value = viewModel.currentState.password,
+                value = uiState.password,
                 onValueChange = { viewModel.setEvent(LoginContract.Event.PasswordInputChange(it)) },
                 label = { Text(stringResource(R.string.enter_password)) },
                 visualTransformation = PasswordVisualTransformation(),

@@ -70,7 +70,7 @@ fun CreateAccountScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             TextField(
-                value = viewModel.currentState.username,
+                value = uiState.username,
                 onValueChange = {
                     viewModel.setEvent(CreateAccountContract.Event.UsernameInputChange(it))
                 },
@@ -79,14 +79,14 @@ fun CreateAccountScreen(
             )
 
             TextField(
-                value = viewModel.currentState.email,
+                value = uiState.email,
                 onValueChange = { viewModel.setEvent(CreateAccountContract.Event.EmailInputChange(it)) },
                 label = { Text(stringResource(R.string.enter_email)) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
             )
 
             TextField(
-                value = viewModel.currentState.password,
+                value = uiState.password,
                 onValueChange = {
                     viewModel.setEvent(CreateAccountContract.Event.PasswordInputChange(it))
                 },
