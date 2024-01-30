@@ -9,7 +9,7 @@ import com.rahulghag.blogapp.utils.UiMessage
 
 class ArticlesContract {
     data class State(
-        val items: List<Article> = emptyList(),
+        val articles: List<Article> = emptyList(),
         val offset: Int = 0,
         val lastPageReached: Boolean = false,
         val isLoading: Boolean = false,
@@ -19,11 +19,15 @@ class ArticlesContract {
     ) : UiState
 
     sealed class Event : UiEvent {
+
+        data object GetArticles : Event()
+        data object RefreshArticles : Event()
         data class SelectArticle(val article: Article) : Event()
         data object GetComments : Event()
         data class DeleteComment(val id: Int) : Event()
         data class CommentInputChange(val comment: String) : Event()
         data object AddComment : Event()
+        data class FollowUser(val isFollowing: Boolean, val username: String) : Event()
     }
 
     sealed class Effect : UiEffect {

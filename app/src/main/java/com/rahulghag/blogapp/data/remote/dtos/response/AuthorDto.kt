@@ -7,7 +7,7 @@ data class AuthorDto(
     @SerializedName("bio")
     val bio: String?,
     @SerializedName("following")
-    val following: Boolean?,
+    val following: Boolean,
     @SerializedName("image")
     val image: String?,
     @SerializedName("username")

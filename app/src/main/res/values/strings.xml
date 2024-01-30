@@ -25,4 +25,6 @@
     <string name="add_comment">Add Comment</string>
     <string name="comment_cannot_be_blank">Comment cannot be blank</string>
     <string name="comment_added_successfully">Comment added successfully</string>
+    <string name="follow">Follow</string>
+    <string name="following">Following</string>
 </resources>

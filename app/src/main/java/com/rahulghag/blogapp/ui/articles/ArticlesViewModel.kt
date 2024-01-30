@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.rahulghag.blogapp.data.repositories.articles.ArticlesPaginator
 import com.rahulghag.blogapp.domain.usecases.AddCommentUseCase
 import com.rahulghag.blogapp.domain.usecases.DeleteCommentUseCase
+import com.rahulghag.blogapp.domain.usecases.FollowToggleUseCase
 import com.rahulghag.blogapp.domain.usecases.GetArticlesUseCase
 import com.rahulghag.blogapp.domain.usecases.GetCommentsUseCase
 import com.rahulghag.blogapp.ui.base.BaseViewModel
@@ -17,7 +18,8 @@ class ArticlesViewModel @Inject constructor(
     private val getArticlesUseCase: GetArticlesUseCase,
     private val getCommentsUseCase: GetCommentsUseCase,
     private val deleteCommentUseCase: DeleteCommentUseCase,
-    private val addCommentUseCase: AddCommentUseCase
+    private val addCommentUseCase: AddCommentUseCase,
+    private val followToggleUseCase: FollowToggleUseCase
 ) : BaseViewModel<ArticlesContract.State, ArticlesContract.Event, ArticlesContract.Effect>() {
 
     private val articlesPaginator = ArticlesPaginator(
@@ -37,7 +39,7 @@ class ArticlesViewModel @Inject constructor(
         onSuccess = { items, newKey ->
             setState {
                 copy(
-                    items = currentState.items + items,
+                    articles = currentState.articles + items,
                     offset = newKey,
                     lastPageReached = items.isEmpty()
                 )
@@ -49,6 +51,14 @@ class ArticlesViewModel @Inject constructor(
 
     override fun handleEvent(event: ArticlesContract.Event) {
         when (event) {
+            is ArticlesContract.Event.GetArticles -> {
+                getArticles()
+            }
+
+            is ArticlesContract.Event.RefreshArticles -> {
+                refreshArticles()
+            }
+
             is ArticlesContract.Event.SelectArticle -> {
                 setState { copy(selectedArticle = event.article, comments = emptyList()) }
                 setEvent(ArticlesContract.Event.GetComments)
@@ -70,15 +80,28 @@ class ArticlesViewModel @Inject constructor(
             ArticlesContract.Event.AddComment -> {
                 addComment()
             }
+
+            is ArticlesContract.Event.FollowUser -> {
+                followUser(
+                    isFollowing = event.isFollowing,
+                    username = event.username
+                )
+            }
         }
     }
 
     init {
-        getArticles()
+        setEvent(ArticlesContract.Event.GetArticles)
     }
 
-    fun getArticles() = viewModelScope.launch {
+    private fun getArticles() = viewModelScope.launch {
         articlesPaginator.loadItems()
+    }
+
+    private fun refreshArticles() {
+        articlesPaginator.reset()
+        setState { copy(articles = emptyList()) }
+        setEvent(ArticlesContract.Event.GetArticles)
     }
 
     private fun getComments() = viewModelScope.launch {
@@ -143,6 +166,34 @@ class ArticlesViewModel @Inject constructor(
                     setState { copy(comment = "", isLoading = true) }
                     setEffect { ArticlesContract.Effect.ShowMessage(result.message) }
                 }
+            }
+        }
+    }
+
+    private fun followUser(
+        isFollowing: Boolean,
+        username: String
+    ) = viewModelScope.launch {
+        val result = followToggleUseCase.invoke(
+            isFollowing = isFollowing,
+            username = username
+        )
+        when (result) {
+            is Resource.Success -> {
+                setState {
+                    copy(
+                        selectedArticle = selectedArticle?.copy(
+                            author = selectedArticle.author?.copy(
+                                isFollowing = !isFollowing
+                            )
+                        )
+                    )
+                }
+                setEvent(ArticlesContract.Event.RefreshArticles)
+            }
+
+            is Resource.Error -> {
+                setEffect { ArticlesContract.Effect.ShowMessage(result.message) }
             }
         }
     }

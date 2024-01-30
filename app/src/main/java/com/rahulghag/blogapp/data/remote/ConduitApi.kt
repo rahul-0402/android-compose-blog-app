@@ -45,4 +45,14 @@ interface ConduitApi {
         @Path("slug") slug: String,
         @Body addCommentRequest: AddCommentRequest
     ): Response<Any>
+
+    @POST("/api/profiles/{username}/follow")
+    suspend fun followUser(
+        @Path("username") username: String
+    ): Response<Any>
+
+    @DELETE("/api/profiles/{username}/follow")
+    suspend fun unFollowUser(
+        @Path("username") username: String
+    ): Response<Any>
 }

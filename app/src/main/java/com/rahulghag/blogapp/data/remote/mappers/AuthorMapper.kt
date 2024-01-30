@@ -8,7 +8,7 @@ class AuthorMapper : DomainMapper<AuthorDto?, Author> {
     override fun mapToDomainModel(data: AuthorDto?): Author {
         return Author(
             bio = data?.bio,
-            following = data?.following,
+            isFollowing = data?.following ?: false,
             image = data?.image,
             username = data?.username
         )

@@ -73,15 +73,15 @@ fun ArticlesScreen(
         contentAlignment = Alignment.Center,
         modifier = modifier,
     ) {
-        if (uiState.items.isEmpty() && uiState.isLoading) {
+        if (uiState.articles.isEmpty() && uiState.isLoading) {
             CircularProgressIndicator()
         } else {
             Articles(
-                articles = uiState.items,
+                articles = uiState.articles,
                 lastPageReached = uiState.lastPageReached,
                 isLoading = uiState.isLoading,
                 onLoadNextItems = {
-                    viewModel.getArticles()
+                    viewModel.setEvent(ArticlesContract.Event.GetArticles)
                 },
                 onSelectArticle = { article ->
                     viewModel.setEvent(ArticlesContract.Event.SelectArticle(article = article))
