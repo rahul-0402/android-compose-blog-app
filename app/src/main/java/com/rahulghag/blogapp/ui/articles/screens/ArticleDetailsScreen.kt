@@ -244,30 +244,48 @@ fun Comments(
                 } else {
                     LazyColumn {
                         item {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(
-                                    text = stringResource(id = R.string.comments),
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Medium
-                                )
-
-                                Icon(
-                                    imageVector = Icons.Rounded.AddCircle,
-                                    contentDescription = stringResource(R.string.add_comment),
+                            Column {
+                                Row(
                                     modifier = Modifier
-                                        .height(20.dp)
-                                        .width(20.dp)
-                                        .clickable {
-                                            onDismissRequest()
-                                            onNavigateToAddComment()
-                                        }
-                                )
+                                        .fillMaxWidth()
+                                        .padding(16.dp),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(
+                                        text = stringResource(id = R.string.comments),
+                                        fontSize = 20.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
+
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        modifier = Modifier
+                                            .align(Alignment.Bottom)
+                                            .clickable {
+                                                onDismissRequest()
+                                                onNavigateToAddComment()
+                                            }
+                                    ) {
+                                        Text(
+                                            text = stringResource(id = R.string.add_comment),
+                                            fontSize = 14.sp,
+                                            fontWeight = FontWeight.Bold
+                                        )
+
+                                        Spacer(modifier = Modifier.width(8.dp))
+
+                                        Icon(
+                                            imageVector = Icons.Rounded.AddCircle,
+                                            contentDescription = stringResource(R.string.add_comment),
+                                            modifier = Modifier
+                                                .height(20.dp)
+                                                .width(20.dp)
+                                        )
+                                    }
+                                }
+
+                                Divider()
                             }
                         }
 
@@ -284,7 +302,9 @@ fun Comments(
                                         onDeleteCommentClick(id)
                                     }
                                 )
-                                Divider()
+                                if (index < comments.lastIndex) {
+                                    Divider()
+                                }
                             }
                         )
                     }

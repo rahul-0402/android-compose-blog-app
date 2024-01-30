@@ -126,20 +126,21 @@ class ArticlesViewModel @Inject constructor(
 
     private fun addComment() = viewModelScope.launch {
         currentState.selectedArticle?.slug?.let { slug ->
+            setState { copy(isLoading = true) }
             val result = addCommentUseCase.invoke(
                 slug = slug,
                 comment = currentState.comment
             )
             when (result) {
                 is Resource.Success -> {
-                    setState { copy(comment = "") }
+                    setState { copy(comment = "", isLoading = true) }
                     setEvent(ArticlesContract.Event.GetComments)
                     setEffect { ArticlesContract.Effect.NavigateToArticleDetails }
                     setEffect { ArticlesContract.Effect.ShowMessage(result.message) }
                 }
 
                 is Resource.Error -> {
-                    setState { copy(comment = "") }
+                    setState { copy(comment = "", isLoading = true) }
                     setEffect { ArticlesContract.Effect.ShowMessage(result.message) }
                 }
             }

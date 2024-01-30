@@ -1,7 +1,6 @@
 package com.rahulghag.blogapp.data.remote
 
 import com.rahulghag.blogapp.data.remote.dtos.request.AddCommentRequest
-import com.rahulghag.blogapp.data.remote.dtos.request.CommentDto
 import com.rahulghag.blogapp.data.remote.dtos.request.UserRequest
 import com.rahulghag.blogapp.data.remote.dtos.response.ArticlesResponse
 import com.rahulghag.blogapp.data.remote.dtos.response.CommentsResponse
