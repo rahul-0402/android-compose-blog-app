@@ -4,9 +4,10 @@ import androidx.lifecycle.viewModelScope
 import com.rahulghag.blogapp.data.repositories.articles.ArticlesPaginator
 import com.rahulghag.blogapp.domain.usecases.AddCommentUseCase
 import com.rahulghag.blogapp.domain.usecases.DeleteCommentUseCase
-import com.rahulghag.blogapp.domain.usecases.FollowToggleUseCase
+import com.rahulghag.blogapp.domain.usecases.FollowUseCase
 import com.rahulghag.blogapp.domain.usecases.GetArticlesUseCase
 import com.rahulghag.blogapp.domain.usecases.GetCommentsUseCase
+import com.rahulghag.blogapp.domain.usecases.UnfollowUseCase
 import com.rahulghag.blogapp.ui.base.BaseViewModel
 import com.rahulghag.blogapp.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,7 +20,8 @@ class ArticlesViewModel @Inject constructor(
     private val getCommentsUseCase: GetCommentsUseCase,
     private val deleteCommentUseCase: DeleteCommentUseCase,
     private val addCommentUseCase: AddCommentUseCase,
-    private val followToggleUseCase: FollowToggleUseCase
+    private val followUseCase: FollowUseCase,
+    private val unfollowUseCase: UnfollowUseCase
 ) : BaseViewModel<ArticlesContract.State, ArticlesContract.Event, ArticlesContract.Effect>() {
 
     private val articlesPaginator = ArticlesPaginator(
@@ -82,10 +84,11 @@ class ArticlesViewModel @Inject constructor(
             }
 
             is ArticlesContract.Event.FollowUser -> {
-                followUser(
-                    isFollowing = event.isFollowing,
-                    username = event.username
-                )
+                followUser(username = event.username)
+            }
+
+            is ArticlesContract.Event.UnfollowUser -> {
+                unfollowUser(username = event.username)
             }
         }
     }
@@ -171,20 +174,38 @@ class ArticlesViewModel @Inject constructor(
     }
 
     private fun followUser(
-        isFollowing: Boolean,
         username: String
     ) = viewModelScope.launch {
-        val result = followToggleUseCase.invoke(
-            isFollowing = isFollowing,
-            username = username
-        )
-        when (result) {
+        when (val result = followUseCase.invoke(username = username)) {
             is Resource.Success -> {
                 setState {
                     copy(
                         selectedArticle = selectedArticle?.copy(
                             author = selectedArticle.author?.copy(
-                                isFollowing = !isFollowing
+                                isFollowing = true
+                            )
+                        )
+                    )
+                }
+                setEvent(ArticlesContract.Event.RefreshArticles)
+            }
+
+            is Resource.Error -> {
+                setEffect { ArticlesContract.Effect.ShowMessage(result.message) }
+            }
+        }
+    }
+
+    private fun unfollowUser(
+        username: String
+    ) = viewModelScope.launch {
+        when (val result = unfollowUseCase.invoke(username = username)) {
+            is Resource.Success -> {
+                setState {
+                    copy(
+                        selectedArticle = selectedArticle?.copy(
+                            author = selectedArticle.author?.copy(
+                                isFollowing = false
                             )
                         )
                     )

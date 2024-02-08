@@ -27,7 +27,8 @@ class ArticlesContract {
         data class DeleteComment(val id: Int) : Event()
         data class CommentInputChange(val comment: String) : Event()
         data object AddComment : Event()
-        data class FollowUser(val isFollowing: Boolean, val username: String) : Event()
+        data class FollowUser(val username: String) : Event()
+        data class UnfollowUser(val username: String) : Event()
     }
 
     sealed class Effect : UiEffect {

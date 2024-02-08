@@ -30,7 +30,7 @@ class UserRepositoryImpl(
         }
     }
 
-    override suspend fun unFollowUser(username: String): Resource<Any?> {
+    override suspend fun unfollowUser(username: String): Resource<Any?> {
         return try {
             val response =
                 conduitApi.unFollowUser(username)

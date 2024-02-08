@@ -125,14 +125,13 @@ fun ArticleDetailsScreen(
                         author = author,
                         modifier = modifier
                             .padding(horizontal = 16.dp),
-                        showFollowToggle = true,
-                        onFollowToggleClick = { isFollowing, username ->
-                            viewModel.setEvent(
-                                ArticlesContract.Event.FollowUser(
-                                    isFollowing = isFollowing,
-                                    username = username
-                                )
-                            )
+                        showFollowButton = true,
+                        onFollowButtonClick = { isFollowing, username ->
+                            if (isFollowing) {
+                                viewModel.setEvent(ArticlesContract.Event.UnfollowUser(username = username))
+                            } else {
+                                viewModel.setEvent(ArticlesContract.Event.FollowUser(username = username))
+                            }
                         }
                     )
                 }

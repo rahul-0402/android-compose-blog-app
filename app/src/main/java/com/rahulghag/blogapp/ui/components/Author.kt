@@ -20,8 +20,8 @@ import com.rahulghag.blogapp.domain.models.Author
 fun Author(
     author: Author,
     modifier: Modifier = Modifier,
-    showFollowToggle: Boolean = false,
-    onFollowToggleClick: ((Boolean, String) -> Unit)? = null
+    showFollowButton: Boolean = false,
+    onFollowButtonClick: ((Boolean, String) -> Unit)? = null
 ) {
     Row(
         modifier = modifier,
@@ -34,7 +34,7 @@ fun Author(
                 fontWeight = FontWeight.Bold
             )
 
-            if (showFollowToggle) {
+            if (showFollowButton) {
                 Spacer(modifier = Modifier.width(4.dp))
 
                 Text(
@@ -53,7 +53,7 @@ fun Author(
                     },
                     modifier = Modifier
                         .clickable {
-                            onFollowToggleClick?.invoke(author.isFollowing, author.username)
+                            onFollowButtonClick?.invoke(author.isFollowing, author.username)
                         },
                     color = MaterialTheme.colorScheme.primary,
                     fontSize = 14.sp,

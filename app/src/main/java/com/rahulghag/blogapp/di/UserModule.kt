@@ -3,7 +3,8 @@ package com.rahulghag.blogapp.di
 import com.rahulghag.blogapp.data.remote.ConduitApi
 import com.rahulghag.blogapp.data.repositories.UserRepositoryImpl
 import com.rahulghag.blogapp.domain.repositories.UserRepository
-import com.rahulghag.blogapp.domain.usecases.FollowToggleUseCase
+import com.rahulghag.blogapp.domain.usecases.FollowUseCase
+import com.rahulghag.blogapp.domain.usecases.UnfollowUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,7 +26,13 @@ object UserModule {
 
     @Provides
     @Singleton
-    fun provideFollowToggleUseCase(userRepository: UserRepository): FollowToggleUseCase {
-        return FollowToggleUseCase(userRepository = userRepository)
+    fun provideFollowUseCase(userRepository: UserRepository): FollowUseCase {
+        return FollowUseCase(userRepository = userRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUnfollowUseCase(userRepository: UserRepository): UnfollowUseCase {
+        return UnfollowUseCase(userRepository = userRepository)
     }
 }
