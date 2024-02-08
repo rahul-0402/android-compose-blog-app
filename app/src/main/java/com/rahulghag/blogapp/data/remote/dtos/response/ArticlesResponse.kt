@@ -20,7 +20,7 @@ data class ArticleDto(
     @SerializedName("description")
     val description: String?,
     @SerializedName("favorited")
-    val isFavorite: Boolean?,
+    val isFavorite: Boolean,
     @SerializedName("favoritesCount")
     val favoritesCount: Int?,
     @SerializedName("slug")

@@ -2,11 +2,13 @@ package com.rahulghag.blogapp.ui.articles
 
 import androidx.lifecycle.viewModelScope
 import com.rahulghag.blogapp.data.repositories.articles.ArticlesPaginator
+import com.rahulghag.blogapp.domain.usecases.AddArticleToFavoritesCase
 import com.rahulghag.blogapp.domain.usecases.AddCommentUseCase
 import com.rahulghag.blogapp.domain.usecases.DeleteCommentUseCase
 import com.rahulghag.blogapp.domain.usecases.FollowUseCase
 import com.rahulghag.blogapp.domain.usecases.GetArticlesUseCase
 import com.rahulghag.blogapp.domain.usecases.GetCommentsUseCase
+import com.rahulghag.blogapp.domain.usecases.RemoveArticleFromFavoritesUseCase
 import com.rahulghag.blogapp.domain.usecases.UnfollowUseCase
 import com.rahulghag.blogapp.ui.base.BaseViewModel
 import com.rahulghag.blogapp.utils.Resource
@@ -21,7 +23,9 @@ class ArticlesViewModel @Inject constructor(
     private val deleteCommentUseCase: DeleteCommentUseCase,
     private val addCommentUseCase: AddCommentUseCase,
     private val followUseCase: FollowUseCase,
-    private val unfollowUseCase: UnfollowUseCase
+    private val unfollowUseCase: UnfollowUseCase,
+    private val addArticleToFavoritesCase: AddArticleToFavoritesCase,
+    private val removeArticleFromFavoritesUseCase: RemoveArticleFromFavoritesUseCase
 ) : BaseViewModel<ArticlesContract.State, ArticlesContract.Event, ArticlesContract.Effect>() {
 
     private val articlesPaginator = ArticlesPaginator(
@@ -89,6 +93,14 @@ class ArticlesViewModel @Inject constructor(
 
             is ArticlesContract.Event.UnfollowUser -> {
                 unfollowUser(username = event.username)
+            }
+
+            ArticlesContract.Event.AddArticleToFavorites -> {
+                addArticleToFavorites()
+            }
+
+            ArticlesContract.Event.RemoveArticleFromFavorites -> {
+                removeArticleFromFavorites()
             }
         }
     }
@@ -215,6 +227,46 @@ class ArticlesViewModel @Inject constructor(
 
             is Resource.Error -> {
                 setEffect { ArticlesContract.Effect.ShowMessage(result.message) }
+            }
+        }
+    }
+
+    private fun addArticleToFavorites() = viewModelScope.launch {
+        currentState.selectedArticle?.slug?.let { slug ->
+            val result = addArticleToFavoritesCase.invoke(
+                slug = slug
+            )
+            when (result) {
+                is Resource.Success -> {
+                    setState {
+                        copy(selectedArticle = selectedArticle?.copy(isFavorite = true))
+                    }
+                    setEvent(ArticlesContract.Event.RefreshArticles)
+                }
+
+                is Resource.Error -> {
+                    setEffect { ArticlesContract.Effect.ShowMessage(result.message) }
+                }
+            }
+        }
+    }
+
+    private fun removeArticleFromFavorites() = viewModelScope.launch {
+        currentState.selectedArticle?.slug?.let { slug ->
+            val result = removeArticleFromFavoritesUseCase.invoke(
+                slug = slug
+            )
+            when (result) {
+                is Resource.Success -> {
+                    setState {
+                        copy(selectedArticle = selectedArticle?.copy(isFavorite = false))
+                    }
+                    setEvent(ArticlesContract.Event.RefreshArticles)
+                }
+
+                is Resource.Error -> {
+                    setEffect { ArticlesContract.Effect.ShowMessage(result.message) }
+                }
             }
         }
     }

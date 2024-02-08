@@ -6,10 +6,12 @@ import com.rahulghag.blogapp.data.remote.mappers.AuthorMapper
 import com.rahulghag.blogapp.data.remote.mappers.CommentsMapper
 import com.rahulghag.blogapp.data.repositories.articles.ArticlesRepositoryImpl
 import com.rahulghag.blogapp.domain.repositories.ArticlesRepository
+import com.rahulghag.blogapp.domain.usecases.AddArticleToFavoritesCase
 import com.rahulghag.blogapp.domain.usecases.AddCommentUseCase
 import com.rahulghag.blogapp.domain.usecases.DeleteCommentUseCase
 import com.rahulghag.blogapp.domain.usecases.GetArticlesUseCase
 import com.rahulghag.blogapp.domain.usecases.GetCommentsUseCase
+import com.rahulghag.blogapp.domain.usecases.RemoveArticleFromFavoritesUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -73,5 +75,17 @@ object ArticlesModule {
     @Singleton
     fun provideAddCommentUseCase(articlesRepository: ArticlesRepository): AddCommentUseCase {
         return AddCommentUseCase(articlesRepository = articlesRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAddArticleToFavoritesUseCase(articlesRepository: ArticlesRepository): AddArticleToFavoritesCase {
+        return AddArticleToFavoritesCase(articlesRepository = articlesRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideRemoveArticleFromFavoritesUseCase(articlesRepository: ArticlesRepository): RemoveArticleFromFavoritesUseCase {
+        return RemoveArticleFromFavoritesUseCase(articlesRepository = articlesRepository)
     }
 }

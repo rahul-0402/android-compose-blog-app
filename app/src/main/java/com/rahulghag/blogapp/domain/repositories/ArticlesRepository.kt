@@ -9,4 +9,6 @@ interface ArticlesRepository {
     suspend fun getComments(slug: String): Resource<List<Comment>>
     suspend fun deleteComment(slug: String, id: Int): Resource<Any?>
     suspend fun addComment(slug: String, comment: String): Resource<Any?>
+    suspend fun addArticleToFavorites(slug: String): Resource<Any?>
+    suspend fun removeArticleFromFavorites(slug: String): Resource<Any?>
 }

@@ -5,7 +5,7 @@ data class Article(
     val body: String?,
     val createdAt: String?,
     val description: String?,
-    val isFavorite: Boolean?,
+    val isFavorite: Boolean,
     val favoritesCount: Int?,
     val slug: String?,
     val tagList: List<String?>?,

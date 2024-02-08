@@ -29,6 +29,8 @@ class ArticlesContract {
         data object AddComment : Event()
         data class FollowUser(val username: String) : Event()
         data class UnfollowUser(val username: String) : Event()
+        data object AddArticleToFavorites : Event()
+        data object RemoveArticleFromFavorites : Event()
     }
 
     sealed class Effect : UiEffect {

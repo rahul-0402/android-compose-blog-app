@@ -55,4 +55,14 @@ interface ConduitApi {
     suspend fun unFollowUser(
         @Path("username") username: String
     ): Response<Any>
+
+    @POST("/api/articles/{slug}/favorite")
+    suspend fun addArticleToFavorites(
+        @Path("slug") slug: String
+    ): Response<Any>
+
+    @DELETE("/api/articles/{slug}/favorite")
+    suspend fun removeArticleFromFavorites(
+        @Path("slug") slug: String
+    ): Response<Any>
 }

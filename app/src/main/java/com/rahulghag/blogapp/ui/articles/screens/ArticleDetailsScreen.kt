@@ -22,7 +22,9 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.ThumbUp
+import androidx.compose.material.icons.outlined.BookmarkAdd
 import androidx.compose.material.icons.rounded.AddCircle
+import androidx.compose.material.icons.rounded.BookmarkAdded
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
@@ -108,14 +110,36 @@ fun ArticleDetailsScreen(
         ) {
             uiState.selectedArticle?.let { article ->
                 article.title?.let {
-                    Text(
-                        text = it,
-                        modifier = modifier
-                            .padding(start = 16.dp, top = 12.dp, end = 16.dp),
-                        maxLines = 4,
-                        overflow = TextOverflow.Ellipsis,
-                        style = Typography.articleTitle,
-                    )
+                    Row {
+                        Text(
+                            text = it,
+                            modifier = modifier
+                                .padding(start = 16.dp, top = 12.dp)
+                                .weight(1f),
+                            maxLines = 4,
+                            overflow = TextOverflow.Ellipsis,
+                            style = Typography.articleTitle,
+                        )
+
+                        Icon(
+                            imageVector = if (article.isFavorite) {
+                                Icons.Rounded.BookmarkAdded
+                            } else {
+                                Icons.Outlined.BookmarkAdd
+                            },
+                            contentDescription = null,
+                            modifier = Modifier
+                                .align(Alignment.Top)
+                                .padding(horizontal = 12.dp, vertical = 12.dp)
+                                .clickable {
+                                    if (article.isFavorite) {
+                                        viewModel.setEvent(ArticlesContract.Event.RemoveArticleFromFavorites)
+                                    } else {
+                                        viewModel.setEvent(ArticlesContract.Event.AddArticleToFavorites)
+                                    }
+                                }
+                        )
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))

@@ -105,4 +105,40 @@ class ArticlesRepositoryImpl(
             }
         }
     }
+
+    override suspend fun addArticleToFavorites(slug: String): Resource<Any?> {
+        return try {
+            val response =
+                conduitApi.addArticleToFavorites(slug = slug)
+            if (response.isSuccessful) {
+                Resource.Success(data = null)
+            } else {
+                Resource.Error(message = parseErrorResponse(errorBody = response.errorBody()))
+            }
+        } catch (exception: Exception) {
+            return when (exception) {
+                is IOException -> Resource.Error(message = UiMessage.StringResource(R.string.error_no_internet_connection))
+                is HttpException -> Resource.Error(message = UiMessage.StringResource(R.string.error_something_went_wrong))
+                else -> Resource.Error(message = UiMessage.StringResource(R.string.error_something_went_wrong))
+            }
+        }
+    }
+
+    override suspend fun removeArticleFromFavorites(slug: String): Resource<Any?> {
+        return try {
+            val response =
+                conduitApi.removeArticleFromFavorites(slug = slug)
+            if (response.isSuccessful) {
+                Resource.Success(data = null)
+            } else {
+                Resource.Error(message = parseErrorResponse(errorBody = response.errorBody()))
+            }
+        } catch (exception: Exception) {
+            return when (exception) {
+                is IOException -> Resource.Error(message = UiMessage.StringResource(R.string.error_no_internet_connection))
+                is HttpException -> Resource.Error(message = UiMessage.StringResource(R.string.error_something_went_wrong))
+                else -> Resource.Error(message = UiMessage.StringResource(R.string.error_something_went_wrong))
+            }
+        }
+    }
 }
