@@ -10,7 +10,7 @@ Inspired by the MVI architecture using Kotlin Flows and Channels, as described i
 - **Comment Interaction**: Users can create and view comments on articles.
 - **Follow Users**: Users can follow other users to stay updated on their activities.
 - **Article Management**: CRUD operations for articles, with pagination for displaying lists. :construction:
-- **Favorites**: Mark articles as favorites for quick access. :construction:
+- **Favorites**: Mark articles as favorites for quick access.
 - **User Management**: CRU- operations for user profiles :construction:
 
 ## Tech Stack
